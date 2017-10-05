@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+  <plugin-info>
+    <description>${project.description}</description>
+    <version>${project.version}</version> 
+    <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+    <param name="configure.url">/secure/admin/HipChatConfigurationView.jspa</param>
+    <param name="atlassian-data-center-compatible">true</param>
+  </plugin-info>
+  <resource type="i18n" name="i18n" location="atlassian-plugin"/>
+  <component-import key="template-renderer" interface="com.atlassian.templaterenderer.velocity.one.six.VelocityTemplateRenderer"/>
+  <component-import key="application-properties" interface="com.atlassian.sal.api.ApplicationProperties"/>
+  <component-import key="pluginSettingsFactory" interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory"/>
+  <component name="Configuration Manager" key="configurationManager" class="com.go2group.hipchat.components.ConfigurationManager">
+    <description>Stores the details of the configured HipChat settings in Bandana</description>
+  </component>
+  <component-import name="Request Factory" key="request-factory" interface="com.atlassian.sal.api.net.RequestFactory"/>
+  <component-import name="Thread Local Delegate Executor Factory" key="thread-local-delegate-executor-factory" interface="com.atlassian.sal.api.executor.ThreadLocalDelegateExecutorFactory"/>
+  <component name="HipChat API Client" key="api-client" class="com.go2group.hipchat.HipChatProxyClient"/>
+  <web-resource name="Resources" key="resources">
+    <resource name="status.js" type="download" location="js/status.js"/>
+    <resource name="styles.css" type="download" location="css/styles.css"/>
+    <resource type="download" name="images/" location="images/"/>
+    <context>jira.general</context>
+  </web-resource>
+  <servlet name="HipChat API proxy" key="proxy" class="com.go2group.proxy.HipChatApiProxyServlet">
+    <url-pattern>/hipchatproxy/*</url-pattern>
+  </servlet>
+  <webwork1 key="hip-chat-actions" class="java.lang.Object">
+    <actions>
+      <action name="com.go2group.hipchat.action.ConfigurationSave" alias="HipChatConfigurationSave"/>
+      <action name="com.go2group.hipchat.action.ConfigurationView" alias="HipChatConfigurationView">
+        <view name="success">/templates/admin.vm</view>
+      </action>
+    </actions>
+  </webwork1>
+  <web-item name="Go2Group HipChat Configuration" i18n-name-key="hipchat.config" key="hipchat-config-item" section="admin_plugins_menu/integrations_section" weight="150" application="jira">
+    <description key="hipchat.config">HipChat Configuration</description>
+    <label key="hipchat.config">Go2Group HipChat Configuration</label>
+    <link linkId="hipchat.config.link">/secure/admin/HipChatConfigurationView.jspa</link>
+  </web-item>
+  <workflow-function key="hip-chat-post-function" name="HipChat Post Function" i18n-name-key="hip-chat-post-function.name" class="com.go2group.jira.workflow.HipChatPostFunctionFactory">
+    <description key="hip-chat-post-function.description">The Hip Chat Post Function Plugin</description>
+    <function-class>com.go2group.jira.workflow.HipChatPostFunction</function-class>
+    <resource type="velocity" name="view" location="templates/postfunctions/hip-chat-post-function.vm"/>
+    <resource type="velocity" name="input-parameters" location="templates/postfunctions/hip-chat-post-function-input.vm"/>
+    <resource type="velocity" name="edit-parameters" location="templates/postfunctions/hip-chat-post-function-input.vm"/>
+  </workflow-function>
+  <web-item name="HipChat Rooms" i18n-name-key="hip-chat-rooms.name" key="hip-chat-rooms" section="system.view.project.operations" weight="1000">
+    <description key="hip-chat-rooms.description">Web Item to map a JIRA project to HipChat rooms</description>
+    <label key="hip-chat-rooms.label"/>
+    <link linkId="hip-chat-rooms-link">/secure/project/MapRooms!default.jspa?pKey=$helper.project.key</link>
+  </web-item>
+  <web-item name="Share Issue Item" i18n-name-key="hipchat.share.item" key="hipchat.share" section="operations-operations" weight="150">
+    <description key="hipchat.share.description">Share the JIRA issue to Hipchat rooms</description>
+    <label key="hipchat.share.label">Share to Hipchat room(s)</label>
+    <link linkId="hipchat.share.link">/secure/HipChatShareIssue!default.jspa?issueKey=$issue.key</link>
+    <condition class="com.atlassian.jira.plugin.webfragment.conditions.UserLoggedInCondition"/>
+  </web-item>
+  <webwork1 key="map-rooms-action" name="Map Rooms Action" i18n-name-key="map-rooms-action.name">
+    <description key="map-rooms-action.description">Maps JIRA Project to HipChat rooms</description>
+    <actions>
+      <action name="com.go2group.jira.webwork.MapRooms" alias="MapRooms">
+        <view name="input">/templates/map-rooms-action/maprooms/success.vm</view>
+      </action>
+    </actions>
+  </webwork1>
+  <webwork1 key="announcement-action" name="Announcement Action" i18n-name-key="announcement-action.name">
+    <description key="announcement-action.description">Send Announcements to Hipchat rooms</description>
+    <actions>
+      <action name="com.go2group.jira.webwork.AnnouncementAction" alias="AnnouncementAction">
+        <view name="input">/templates/announcement/success.vm</view>
+        <view name="success">/templates/announcement/success.vm</view>
+      </action>
+    </actions>
+  </webwork1>
+  <webwork1 key="share-action" name="Share Issue Action" i18n-name-key="share.action.name">
+    <description key="share.action.description">Share the JIRA issue with Hipchat rooms</description>
+    <actions>
+      <action name="com.go2group.jira.webwork.HipChatShareIssue" alias="HipChatShareIssue">
+        <view name="input">/templates/shareissue/success.vm</view>
+        <view name="success">/templates/shareissue/success.vm</view>
+      </action>
+    </actions>
+  </webwork1>
+  <component key="eventListener" class="com.go2group.hipchat.components.IssueEventListener">
+    <description>Listener that processes the JIRA Issue Events</description>
+  </component>
+  <component-import key="eventPublisher" interface="com.atlassian.event.api.EventPublisher"/>
+</atlassian-plugin>

@@ -1,0 +1,39 @@
+.vcard {
+    position:relative;
+}
+a.hc-status {
+    display: block;
+    width: 16px;
+    height: 16px;
+    border: 0;
+    position: absolute;
+    top: 7px;
+    right: 4px;
+}
+a.hc-status.available {
+    background-image:url(images/available.png);
+    background-repeat: no-repeat;
+}
+a.hc-status.away {
+    background-image: url(images/away.png);
+    background-repeat: no-repeat;
+}
+a.hc-status.dnd {
+    background-image: url(images/dnd.png);
+    background-repeat: no-repeat;
+}
+a.hc-status.offline {
+    background-image: url(images/offline.png);
+    background-repeat: no-repeat;
+}
+a.hc-status.iphone {
+    background-image: url(images/iphone.png);
+    background-repeat: no-repeat;
+}
+a.hc-status.android {
+    background-image: url(images/android.png);
+    background-repeat: no-repeat;
+}
+a.hc-status span {
+    display:none;
+}

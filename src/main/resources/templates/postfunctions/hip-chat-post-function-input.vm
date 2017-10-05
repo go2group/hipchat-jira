@@ -1,0 +1,52 @@
+#* @vtlvariable name="i18n" type="com.atlassian.jira.util.I18nHelper" *#
+#* @vtlvariable name="baseUrl" type="java.lang.String" *#
+#* @vtlvariable name="dto" type="com.atlassian.labs.jira.workflow.HipChatPostFunctionFactory.EditDto" *#
+<tr>
+    <td colspan="2">
+        #if(!$dto.apiTokenConfigured)
+            $i18n.getText("hipchat.postfunction.tokennotconfigured", "$baseUrl/secure/admin/HipChatConfigurationView.jspa")
+        #end
+
+        #if($dto.responseError)
+            $i18n.getText("hipchat.postfunction.requesterror", "$baseUrl/secure/admin/HipChatConfigurationView.jspa")
+        #end
+    </td>
+</tr>
+#if (!$dto.apiTokenConfigured || $dto.responseError)
+<style>
+        /* quick fix to hide add button on error */
+    #add_submit, #update_submit {
+        display: none;
+    }
+</style>
+#else
+<tr>
+    <td colspan="2">$i18n.getText("hipchat.postfunctionedit.jqlintro")</td>
+</tr>
+<tr>
+    <td class="fieldLabelArea">
+        $i18n.getText("hipchat.postfunctionedit.jql")
+    </td>
+    <td nowrap>
+        <textarea name="jql" id="jql" rows="3" cols="50">$textutils.htmlEncode($!dto.jql)</textarea>
+    </td>
+</tr>
+<tr>
+    <td colspan="2">$i18n.getText("hipchat.postfunctionedit.roomsintro")</td>
+</tr>
+<tr>
+    <td class="fieldLabelArea">
+        $i18n.getText("hipchat.postfunctionedit.roomslistlabel")
+    </td>
+    <td nowrap>
+        <ul>
+            #foreach($room in $dto.rooms)
+                <li class="aui"><input type="checkbox" id="room-$room.id" name="roomsToNotify" value="$room.id"
+                    #if($dto.roomsToNotifyIds.contains($room.id)) checked #end >
+
+                    <label for="room-$room.id">$textutils.htmlEncode($room.name)</label></li>
+            #end
+        </ul>
+    </td>
+</tr>
+#end

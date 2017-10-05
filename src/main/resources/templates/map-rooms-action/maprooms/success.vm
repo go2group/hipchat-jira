@@ -1,0 +1,57 @@
+<html>
+	<head>
+		<title>HipChat Project Configuration</title>
+	</head>
+	<body>
+		<form method="POST" action="$requestContext.baseUrl/secure/project/MapRooms.jspa" class="aui">
+			<input type="hidden" name="pKey" value="$pKey"/>
+			<h2>HipChat Configuration</h2>
+			<fieldset>
+				<div class="field-group">
+					<label>Rooms to be notified</label>
+					<span class="field-value">						
+			            #foreach($room in $rooms)
+			                <input type="checkbox" id="room-$room.roomId" name="roomsToNotify" value="$room.roomId"
+			                    #if($roomsToNotifyIds.contains($room.getRoomId().toString())) checked #end > $textutils.htmlEncode($room.name)<br>
+			            #end
+					</span>
+					<div class="description">$action.getText("hip-chat-rooms.description")</div>
+				</div>
+				<div class="field-group">
+					<label>Events to be notified</label>
+					<span class="field-value">						
+			            #foreach($event in $action.events)
+			                <input type="checkbox" name="eventsToNotify" value="$event.id"
+			                    #if($eventsToNotifyIds.contains($event.getId().toString())) checked #end > $textutils.htmlEncode($event.name)<br>
+			            #end
+			            <input type="checkbox" name="eventsToNotify" value="$workflowEvents"
+			                    #if($eventsToNotifyIds.contains($workflowEvents)) checked #end > $textutils.htmlEncode("Workflow Changes")<br>
+					</span>
+					<div class="description">$action.getText("hip-chat-events.description")</div>
+				</div>
+				<div class="field-group">
+					<label>JQL rule</label>
+					<span class="field-value">
+						<textarea class="textarea long-field" cols="50" rows="2" name="jql">$jql</textarea>
+					</span>
+					<div class="description">$action.getText("hip-chat-jql.description")</div>
+				</div>
+				<div class="field-group">
+					<label>Notify?</label>
+					<span class="field-value">						
+			            <div>
+					     	<input type="radio" name="notify" value="true" #if($notify.equals("true")) checked #end> Yes
+					       	<input type="radio" name="notify" value="false" #if($notify.equals("false")) checked #end> No
+					    </div>
+					</span>
+					<div class="description">$action.getText("hip-chat-rooms.notify")</div>
+				</div>
+			</fieldset>
+			<div class="buttons-container form-footer">
+				<div class="buttons">
+					<input type="submit" name="Save Mapping" value="$action.getText("hip-chat-rooms.save")"/>
+				</div>
+			</div>
+		</form>
+	</body>
+</html> 

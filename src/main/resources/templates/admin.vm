@@ -1,0 +1,64 @@
+<html>
+<head>
+    <title>HipChat Configuration</title>
+    <meta name="decorator" content="atl.admin"/>
+    <meta content="admin_plugins_menu/integrations_section" name="admin.active.section">
+</head>
+<body>
+<form action="${req.contextPath}/secure/admin/HipChatConfigurationSave.jspa" method="post" class="aui">
+    <div class="form-body">
+        <h2>$i18n.getText("hipchat.admin.title")</h2>
+
+        #if($saved)
+            <div class="aui-message success"><span class="aui-icon icon-success"></span>
+                <p>$i18n.getText("hipchat.admin.savedsuccessfully")</p>
+            </div>
+        #end
+        
+        #if($error)
+            <div class="aui-message error"><span class="aui-icon icon-error"></span>
+                <p>$i18n.getText("hipchat.admin.error")</p>
+            </div>
+        #end
+
+        <p>
+            $i18n.getText("hipchat.admin.intro")
+        </p>
+        
+        <div class="field-group">
+            <label for="serverUrl">$i18n.getText("hipchat.admin.serverUrl")<span
+                    class="aui-icon icon-required"></span><span
+                    class="content"> $i18n.getText("admin.common.words.required")</span></label>
+            <input id="serverUrl" class="text" type="text" name="serverUrl"
+                   value="$serverUrl">
+        </div>
+
+        <div class="field-group">
+            <label for="hipChatAuthToken">$i18n.getText("hipchat.admin.admintoken")<span
+                    class="aui-icon icon-required"></span><span
+                    class="content"> $i18n.getText("admin.common.words.required")</span></label>
+            <input id="hipChatAuthToken" class="text" type="password" name="hipChatAuthToken"
+                   value="$fakeHipChatAuthToken">
+        </div>
+        
+        <div class="field-group">
+	        <label for="showComments">Show Comments?</label>
+			<div class="checkbox">
+				<input class="checkbox" type="checkbox" name="showComments" id="showComments" value="Yes" #if($showComments) checked #end> 
+			    <div class="description">Display the actual comment in Hipchat notifications on Comment Events</div>
+			</div> 
+	    </div>
+        
+        <input type="hidden" name="atl_token" value="$atl_token">
+        <div class="buttons-container">
+            <div class="buttons">
+                <input class="button submit" type="submit" value="Save"/>
+                #if($fakeHipChatAuthToken)
+            		<a href="$req.contextPath/secure/admin/AnnouncementAction!default.jspa">&nbsp;Announcements</a>
+            	#end
+            </div>
+        </div>
+    </div>
+</form>
+</body>
+</html>

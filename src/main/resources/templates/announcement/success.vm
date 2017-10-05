@@ -1,0 +1,111 @@
+<html>
+	<head>
+		<title>HipChat Announcements</title>
+		<meta name="decorator" content="atl.admin"/>
+		<meta content="admin_plugins_menu/integrations_section" name="admin.active.section">
+	</head>
+	<body>
+		<form method="POST" action="$requestContext.baseUrl/secure/admin/AnnouncementAction.jspa" class="aui">
+			<h2>HipChat Announcements</h2>
+			 #if($messagePosted)
+	            <div class="aui-message success shadowed closeable">
+	                <p class="title">
+	                    <span class="aui-icon icon-success"></span>
+	                    <strong>$action.getText("hipchat.action.success.announcement")</strong>
+	                </p>
+	            </div>
+        	#end
+			<fieldset>
+				<div class="field-group">
+					<label>Announcement</label>
+					<span class="field-value">						
+			            <div>
+					    	<textarea rows="6" cols="100" id="message" name="message"></textarea> 
+					    </div>
+					</span>
+					<div class="description">$action.getText("hip-chat-rooms.desc")</div>
+				</div>
+				<div class="field-group">
+					<label>Color</label>
+					<span class="field-value">						
+			            <div>
+					     	<input type="radio" name="color" value="yellow"> Yellow
+					       	<input type="radio" name="color" value="red"> Red
+					       	<input type="radio" name="color" value="green"> Green
+					       	<input type="radio" name="color" value="purple" checked> Purple
+					       	<input type="radio" name="color" value="gray"> Gray
+					    </div>
+					</span>
+					<div class="description">$action.getText("hip-chat-rooms.color")</div>
+				</div>
+				<div class="field-group">
+					<label>Message Format</label>
+					<span class="field-value">						
+			            <div>
+					     	<input type="radio" name="format" value="text" checked> Text
+					       	<input type="radio" name="format" value="html"> HTML
+					    </div>
+					</span>
+					<div class="description">$action.getText("hip-chat-rooms.format")</div>
+				</div>
+				<div class="field-group">
+					<label>Notify?</label>
+					<span class="field-value">						
+			            <div>
+					     	<input type="radio" name="notify" value="true" checked> Yes
+					       	<input type="radio" name="notify" value="false"> No
+					    </div>
+					</span>
+					<div class="description">$action.getText("hip-chat-rooms.notify")</div>
+				</div>
+				<div class="field-group">
+					<label>Rooms to be notified</label>
+					<span class="field-value">
+						<select name="roomOption" id="roomOption">
+		            		<option value="all" selected>All Rooms</option>
+		            		<option value="subscribed">Rooms subscribed to atleast one notification</option>
+		            		<option value="specifc">Selected Rooms</option>
+		            	</select>	
+						<div id="room-list">
+							<br>
+				            <input type="button" id="selectAll" name="selectAll" value="Select All">
+            				<input type="button" id="selectNone" name="selectNone" value="Select None"><br>		
+            				#foreach($room in $rooms)
+				                <input type="checkbox" id="room-$room.roomId" name="roomsToNotify" value="$room.roomId"> $textutils.htmlEncode($room.name)<br>
+				            #end
+				        </div>
+					</span>
+					<div class="description">$action.getText("hip-chat-rooms.description")</div>
+				</div>
+			</fieldset>
+			<div class="buttons-container form-footer">
+				<div class="buttons">
+					<input type="submit" name="Post" value="$action.getText("hip-chat-rooms.post")"/>
+					<a href="${req.contextPath}/secure/admin/HipChatConfigurationView.jspa">Cancel</a>
+				</div>
+			</div>
+		</form>
+	
+	<script type="text/javascript">	
+		AJS.$("#room-list").hide();	
+		AJS.$("#selectAll").click(function () {
+			AJS.$("#room-list").find(':checkbox').prop('checked', true);
+		});
+		
+		AJS.$("#selectNone").click(function () {
+			AJS.$("#room-list").find(':checkbox').removeAttr('checked');
+		});
+		
+		AJS.$("#roomOption").change(function () {
+			if (AJS.$(this).val() == "specifc"){
+				AJS.$("#buttonGroup").show();
+				AJS.$("#room-list").show();
+			} else {
+				AJS.$("#buttonGroup").hide();
+				AJS.$("#room-list").hide();
+			}
+		});
+	</script>
+	
+	</body>
+</html> 

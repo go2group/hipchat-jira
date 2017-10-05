@@ -1,0 +1,29 @@
+#* @vtlvariable name="i18n" type="com.atlassian.jira.util.I18nHelper" *#
+#* @vtlvariable name="dto" type="com.atlassian.labs.jira.workflow.HipChatPostFunctionFactory.ViewDto" *#
+#* @vtlvariable name="baseUrl" type="java.lang.String" *#
+#if (!$dto.apiTokenConfigured)
+    $i18n.getText("hipchat.postfunction.tokennotconfigured", "$baseUrl/secure/admin/HipChatConfigurationView.jspa")
+#elseif($dto.responseError)
+    $i18n.getText("hipchat.postfunction.requesterror", "$baseUrl/secure/admin/HipChatConfigurationView.jspa")
+#else
+    #if ($dto.roomsToNotify.isEmpty())
+        $i18n.getText("hipchat.postfunctionview.noroomselected")
+    #else
+        #if ($!dto.jql != '')
+            $i18n.getText("hipchat.postfunctionview.jqlfilter", $textutils.htmlEncode($dto.jql))
+        #else
+            $i18n.getText("hipchat.postfunctionview.withoutfilter")
+        #end
+    <ul>
+        #foreach($room in $dto.roomsToNotify)
+            <li>
+                #if($room.name)
+                    $textutils.htmlEncode($room.name)
+                #else
+                    $i18n.getText("hipchat.postfunctionview.roomremoved", $room.id)
+                #end
+            </li>
+        #end
+    </ul>
+    #end
+#end

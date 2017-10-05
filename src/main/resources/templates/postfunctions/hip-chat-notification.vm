@@ -1,0 +1,11 @@
+#* @vtlvariable name="i18n" type="com.atlassian.jira.util.I18nHelper" *#
+#* @vtlvariable name="dto" type="com.go2group.jira.workflow.HipChatPostFunction.NotificationDto" *#
+<img src="$dto.baseUrl$dto.issue.getIssueTypeObject().getIconUrl()" width="16" height="16">
+<a href="$dto.baseUrl/browse/$dto.issue.key"><b>$dto.issue.key:</b> $dto.issue.summary</a>
+<b>$dto.firstStepName</b>&rarr;<em>$dto.actionName</em>&rarr;<b>$dto.endStep.name</b> by
+<a href="$dto.baseUrl/secure/ViewProfile.jspa?name=$dto.actor.name">$dto.actor.displayName</a>.
+
+#if($dto.issue.assignee)
+$i18n.getText("hipchat.notification.currentassignee")
+<a href="$dto.baseUrl/secure/ViewProfile.jspa?name=$dto.issue.assignee.name">$dto.issue.assignee.displayName</a>.
+#end
